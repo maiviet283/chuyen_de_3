@@ -1,0 +1,245 @@
+1. tạo user rakesh - nơi làm việc
+sudo adduser rakesh
+
+
+2. cấp quyền sudo cho user vừa mới tạo - để user này có nhiều quyền hơn
+sudo usermod -aG sudo rakesh
+
+
+3. đăng nhập vào user rakesh
+su - rakesh
+
+
+4. tải các công cụ và ngôn ngữ (python)
+rakesh@ubuntu:~$ sudo apt install python3-venv python3-dev libpq-dev nginx curl
+
+
+5. tạo môi trường ảo 
+rakesh@ubuntu:~$ python3 -m venv envtestdjango
+rakesh@ubuntu:~$ ls
+envtestdjango
+
+
+6. khởi tạo môi trường ảo và tải thư viện django
+rakesh@ubuntu:~$ source envtestdjango/bin/activate
+(envtestdjango) rakesh@ubuntu:~$ pip install django
+Collecting django
+  Downloading Django-5.1.2-py3-none-any.whl (8.3 MB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 8.3/8.3 MB 11.2 MB/s eta 0:00:00
+Collecting asgiref<4,>=3.8.1
+  Downloading asgiref-3.8.1-py3-none-any.whl (23 kB)
+Collecting sqlparse>=0.3.1
+  Downloading sqlparse-0.5.1-py3-none-any.whl (44 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 44.2/44.2 KB 6.0 MB/s eta 0:00:00
+Collecting typing-extensions>=4
+  Downloading typing_extensions-4.12.2-py3-none-any.whl (37 kB)
+Installing collected packages: typing-extensions, sqlparse, asgiref, django
+Successfully installed asgiref-3.8.1 django-5.1.2 sqlparse-0.5.1 typing-extensions-4.12.2
+(envtestdjango) rakesh@ubuntu:~$ 
+
+
+7. tạo dự án django có tên là chuyende và cấu trúc thư mục sau đó (ls)
+(envtestdjango) rakesh@ubuntu:~$ django-admin startproject chuyende
+(envtestdjango) rakesh@ubuntu:~$ ls
+chuyende  envtestdjango
+(envtestdjango) rakesh@ubuntu:~$ 
+
+
+8. Khởi tạo Database SQLite cho Django
+(envtestdjango) rakesh@ubuntu:~$ cd chuyende/
+(envtestdjango) rakesh@ubuntu:~/chuyende$ python3 manage.py migrate
+Operations to perform:
+  Apply all migrations: admin, auth, contenttypes, sessions
+Running migrations:
+  Applying contenttypes.0001_initial... OK
+  Applying auth.0001_initial... OK
+  Applying admin.0001_initial... OK
+  Applying admin.0002_logentry_remove_auto_add... OK
+  Applying admin.0003_logentry_add_action_flag_choices... OK
+  Applying contenttypes.0002_remove_content_type_name... OK
+  Applying auth.0002_alter_permission_name_max_length... OK
+  Applying auth.0003_alter_user_email_max_length... OK
+  Applying auth.0004_alter_user_username_opts... OK
+  Applying auth.0005_alter_user_last_login_null... OK
+  Applying auth.0006_require_contenttypes_0002... OK
+  Applying auth.0007_alter_validators_add_error_messages... OK
+  Applying auth.0008_alter_user_username_max_length... OK
+  Applying auth.0009_alter_user_last_name_max_length... OK
+  Applying auth.0010_alter_group_name_max_length... OK
+  Applying auth.0011_update_proxy_permissions... OK
+  Applying auth.0012_alter_user_first_name_max_length... OK
+  Applying sessions.0001_initial... OK
+(envtestdjango) rakesh@ubuntu:~/chuyende$ ls
+chuyende  db.sqlite3  manage.py
+(envtestdjango) rakesh@ubuntu:~/chuyende$ 
+
+
+9. tạo một thư mục static (nginx rất mạnh trong việc quản lý file tĩnh, nên ta sẽ cho nginx quản lý thay vì phải bắt django quản lý và xử lý dữ liệu)
+(envtestdjango) rakesh@ubuntu:~/chuyende$ mkdir static
+(envtestdjango) rakesh@ubuntu:~/chuyende$ ls
+chuyende  db.sqlite3  manage.py  static
+(envtestdjango) rakesh@ubuntu:~/chuyende$ 
+
+
+10. Truy cập vào file setting trong dự án django và thêm STATIC_ROOT : đây là file cấu hình để django sẽ lấy file tĩnh ở thư mục vừa tạo ở mục 9
+(envtestdjango) rakesh@ubuntu:~/chuyende$ sudo nano chuyende/settings.py 
+thêm dòng này : 
+STATIC_ROOT = os.path.join(BASE_DIR,'static/')
+và import thư viện os ở dòng trên cùng của file setting.py : import os
+
+11. sao chép toàn bộ file tĩnh sang thư mục static tạo ở mục 9, vì khi tạo dự án django các file tĩnh đang được đặt trong project, nên phải chuyển các file tĩnh sang hết bên thư mục static được tạo
+(envtestdjango) rakesh@ubuntu:~/chuyende$ python3 manage.py collectstatic
+127 static files copied to '/home/rakesh/chuyende/static'.
+(envtestdjango) rakesh@ubuntu:~/chuyende$ 
+
+
+12. chạy thử server xem nó có hoạt động hay không, khi server đang chạy thì truy cập vào đường dẫn : http://127.0.0.1:8000/
+(envtestdjango) rakesh@ubuntu:~/chuyende$ python3 manage.py runserver
+Watching for file changes with StatReloader
+Performing system checks...
+
+System check identified no issues (0 silenced).
+October 30, 2024 - 12:40:34
+Django version 5.1.2, using settings 'chuyende.settings'
+Starting development server at http://127.0.0.1:8000/
+Quit the server with CONTROL-C.
+
+[30/Oct/2024 12:40:35] "GET / HTTP/1.1" 200 12068
+
+
+13. vào lại file setting thêm '*' vào allhost để có thể cho phép nhiều ip chạy được server, chạy server có hình máy bay màu xanh là dc
+ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
+
+
+
+14. tải gunicorn (đây là phần trung gian, giao tiếp giữa nginx và django)
+(envtestdjango) rakesh@ubuntu:~/chuyende$ pip install gunicorn
+Collecting gunicorn
+  Downloading gunicorn-23.0.0-py3-none-any.whl (85 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 85.0/85.0 KB 896.8 kB/s eta 0:00:00
+Collecting packaging
+  Downloading packaging-24.1-py3-none-any.whl (53 kB)
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 54.0/54.0 KB 3.4 MB/s eta 0:00:00
+Installing collected packages: packaging, gunicorn
+Successfully installed gunicorn-23.0.0 packaging-24.1
+(envtestdjango) rakesh@ubuntu:~/chuyende$ 
+
+15. thử chạy django bằng gunicorn
+(envtestdjango) rakesh@ubuntu:~/chuyende$ gunicorn --bind 0.0.0.0:8000 chuyende.wsgi
+[2024-10-30 19:47:06 +0700] [65030] [INFO] Starting gunicorn 23.0.0
+[2024-10-30 19:47:06 +0700] [65030] [INFO] Listening at: http://0.0.0.0:8000 (65030)
+[2024-10-30 19:47:06 +0700] [65030] [INFO] Using worker: sync
+[2024-10-30 19:47:06 +0700] [65031] [INFO] Booting worker with pid: 65031
+
+
+16. tạo file gunicorn.socket ->  sudo nano /etc/systemd/system/gunicorn.socket
+
+[Unit]
+Description=test django
+
+[Socket]
+ListenStream=/run/gunicorn.sock
+
+[Install]
+WantedBy=sockets.target
+
+
+17. tạo file gunicorn.service ->  sudo nano /etc/systemd/system/gunicorn.service
+
+[Unit]
+Description=gunicorn daemon
+Requires=gunicorn.socket
+After=network.target
+
+[Service]
+User=rakesh
+Group=www-data
+WorkingDirectory=/home/rakesh/chuyende  
+ExecStart=/home/rakesh/envtestdjango/bin/gunicorn \
+          --access-logfile - \
+          --workers 3 \
+          --bind unix:/run/gunicorn.sock \
+          chuyende.wsgi:application
+
+[Install]
+WantedBy=multi-user.target
+
+
+
+18 . tải lại và cập nhật lại cấu hình, chạy trạng thái có running là dc
+sudo systemctl daemon-reload
+sudo systemctl start gunicorn.service
+sudo systemctl status gunicorn.service
+
+(envtestdjango) rakesh@ubuntu:~$ sudo systemctl status gunicorn.service
+[sudo] password for rakesh: 
+● gunicorn.service - gunicorn daemon
+     Loaded: loaded (/etc/systemd/system/gunicorn.service; disabled; vendor preset: enabled)
+     Active: active (running) since Wed 2024-10-30 20:13:55 +07; 2min 3s ago
+TriggeredBy: ● gunicorn.socket
+   Main PID: 65932 (gunicorn)
+      Tasks: 4 (limit: 4551)
+     Memory: 88.6M
+        CPU: 701ms
+     CGroup: /system.slice/gunicorn.service
+             ├─65932 /home/rakesh/envtestdjango/bin/python3 /home/rakesh/envtestdjango/bin/guni>
+             ├─65933 /home/rakesh/envtestdjango/bin/python3 /home/rakesh/envtestdjango/bin/guni>
+             ├─65934 /home/rakesh/envtestdjango/bin/python3 /home/rakesh/envtestdjango/bin/guni>
+             └─65935 /home/rakesh/envtestdjango/bin/python3 /home/rakesh/envtestdjango/bin/guni>
+
+Thg 10 30 20:13:55 ubuntu systemd[1]: Started gunicorn daemon.
+Thg 10 30 20:13:55 ubuntu gunicorn[65932]: [2024-10-30 20:13:55 +0700] [65932] [INFO] Starting >
+Thg 10 30 20:13:55 ubuntu gunicorn[65932]: [2024-10-30 20:13:55 +0700] [65932] [INFO] Listening>
+Thg 10 30 20:13:55 ubuntu gunicorn[65932]: [2024-10-30 20:13:55 +0700] [65932] [INFO] Using wor>
+Thg 10 30 20:13:55 ubuntu gunicorn[65933]: [2024-10-30 20:13:55 +0700] [65933] [INFO] Booting w>
+Thg 10 30 20:13:56 ubuntu gunicorn[65934]: [2024-10-30 20:13:56 +0700] [65934] [INFO] Booting w>
+Thg 10 30 20:13:56 ubuntu gunicorn[65935]: [2024-10-30 20:13:56 +0700] [65935] [INFO] Booting w>
+
+(envtestdjango) rakesh@ubuntu:~$ 
+
+
+
+19. curl --unix-socket /run/gunicorn.sock localhost
+gửi lệnh ni để được nhận lại html css, 1 đống thứ
+
+
+20. cấu hình cho nginx 
+sudo nano /etc/nginx/sites-available/chuyende 
+
+server {
+    listen 80;
+    server_name 192.168.226.130;
+
+    location = /favicon.ico { access_log off; log_not_found off; }
+    location /static/ {
+        alias /home/rakesh/chuyende/static/;
+    }
+
+    location / {
+        include proxy_params;
+        proxy_pass http://unix:/run/gunicorn.sock;
+    }
+}
+
+
+
+21. dòng trên cấu hình nginx khi khi khởi động, dòng dưới kiểm tra tình trạng nginx
+(envtestdjango) rakesh@ubuntu:~$ sudo ln -s /etc/nginx/sites-available/chuyende /etc/nginx/sites-enabled
+(envtestdjango) rakesh@ubuntu:~$ sudo nginx -t
+nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
+nginx: configuration file /etc/nginx/nginx.conf test is successful
+(envtestdjango) rakesh@ubuntu:~$ 
+
+khởi động lại toàn bộ
+sudo systemctl restart nginx
+
+ok, vô trang web bằng ip của máy, ở cổng 80
+ví dụ : http://192.168.226.130/
+
+
+cấp quyền cho static nếu vào http://192.168.226.130/admin mà ko có giao diện đẹp như css
+sudo chmod 755 /home/rakesh
+sudo find /home/rakesh/chuyende/static/ -type f -exec chmod 644 {} \;
+sudo find /home/rakesh/chuyende/static/ -type d -exec chmod 755 {} \;
+sudo systemctl restart nginx
