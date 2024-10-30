@@ -1,3 +1,6 @@
+video hướng dẫn đẩy dự án django lên nginx thông qua gunicorn
+https://youtu.be/NSHshIEVL-M?si=5qtOn9gbvZ4l_O90
+
 1. tạo user rakesh - nơi làm việc
 sudo adduser rakesh
 
