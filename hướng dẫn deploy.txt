@@ -268,3 +268,5 @@ sudo apt install redis-server
 sudo systemctl start redis
 sudo systemctl enable redis-server
 sudo systemctl status redis
+
+kiểm tra cú pháp 1 file python có đúng hay ko : python -m py_compile (+file)
