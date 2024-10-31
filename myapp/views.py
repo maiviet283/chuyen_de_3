@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render,HttpResponse
 
 # Create your views here.
 
@@ -11,3 +11,7 @@ def get_resource(request):
         'message': f"Đang truy cập tài nguyên có ID = {id_value}",
         'user_ip': user_ip
     })
+
+
+def index(request):
+    return HttpResponse("<h1>Xin Chào</h1>")
