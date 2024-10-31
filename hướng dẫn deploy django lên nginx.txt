@@ -1,4 +1,4 @@
-video hướng dẫn đẩy dự án django lên nginx thông qua gunicorn
+﻿video hướng dẫn đẩy dự án django lên nginx thông qua gunicorn
 https://youtu.be/NSHshIEVL-M?si=5qtOn9gbvZ4l_O90
 
 1. tạo user rakesh - nơi làm việc
@@ -23,9 +23,10 @@ rakesh@ubuntu:~$ ls
 envtestdjango
 
 
-6. khởi tạo môi trường ảo và tải thư viện django
+6. khởi tạo môi trường ảo và tải thư viện django 
 rakesh@ubuntu:~$ source envtestdjango/bin/activate
 (envtestdjango) rakesh@ubuntu:~$ pip install django
+(envtestdjango) rakesh@ubuntu:~$ pip install django-redis
 Collecting django
   Downloading Django-5.1.2-py3-none-any.whl (8.3 MB)
      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 8.3/8.3 MB 11.2 MB/s eta 0:00:00
@@ -212,18 +213,23 @@ sudo nano /etc/nginx/sites-available/chuyende
 
 server {
     listen 80;
-    server_name 192.168.226.130;
+    server_name 192.168.226.130;  # Thay bằng tên miền hoặc IP của server
 
     location = /favicon.ico { access_log off; log_not_found off; }
     location /static/ {
-        alias /home/rakesh/chuyende/static/;
+        alias /home/vietmau/chuyen_de_3/static/;  # Đường dẫn đến thư mục static
     }
 
     location / {
-        include proxy_params;
-        proxy_pass http://unix:/run/gunicorn.sock;
+        proxy_pass http://unix:/run/gunicorn.sock;  # Đường dẫn đến Gunicorn socket
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;  # Gửi địa chỉ IP của người dùng
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header Cache-Control "no-store";  # Ngăn cache
     }
 }
+
 
 
 
@@ -246,3 +252,17 @@ sudo chmod 755 /home/rakesh
 sudo find /home/rakesh/chuyende/static/ -type f -exec chmod 644 {} \;
 sudo find /home/rakesh/chuyende/static/ -type d -exec chmod 755 {} \;
 sudo systemctl restart nginx
+
+
+sudo chmod -R 755 /home/vietmau/chuyen_de_3/static/
+sudo chown -R www-data:www-data /home/vietmau/chuyen_de_3/static/
+
+
+sudo tail -f /var/log/nginx/error.log
+
+tải và cài đặt cache
+sudo apt update
+sudo apt install redis-server
+sudo systemctl start redis
+sudo systemctl enable redis-server
+sudo systemctl status redis
