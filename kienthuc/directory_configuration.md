@@ -14,7 +14,7 @@ Dưới đây là phần giải thích chi tiết về cấu trúc dự án củ
   - **`wsgi.py`**: Tệp cấu hình cho giao diện WSGI (Web Server Gateway Interface) mà cho phép ứng dụng Django được chạy trên các máy chủ web.
   - **`settings.py`**: Tệp cấu hình chính của ứng dụng Django, nơi bạn định nghĩa các cài đặt như cơ sở dữ liệu, middleware, các ứng dụng đã cài đặt, và các biến khác.
 
-### 4. **Ứng dụng: `myapp`**
+### 4. **Ứng dụng: `myapp` (Ứng Dụng này được tạo từ thư mục chuyen_de_3 + file manage.py -> nó là con của chuyen_de_3)**
 - **Chức năng:** Chứa mã nguồn và logic của một ứng dụng cụ thể trong dự án Django.
 - **Nội dung:**
   - **`templates/myapp/`**: Thư mục chứa các tệp HTML, dùng để render giao diện người dùng. Các tệp này sẽ được sử dụng để hiển thị dữ liệu đến người dùng.
