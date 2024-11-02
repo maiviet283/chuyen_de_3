@@ -133,6 +133,7 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# Server của Chache Redis
 CACHES = {
     'default': {
         'BACKEND': 'django_redis.cache.RedisCache',
