@@ -6,13 +6,13 @@ Trong dự án này, chúng tôi đã phát triển một ứng dụng web sử 
 
 Ứng dụng sử dụng **Nginx** làm reverse proxy để quản lý lưu lượng truy cập, kết hợp với **Gunicorn** để xử lý các yêu cầu của ứng dụng Django. Điều này đảm bảo hiệu suất và khả năng mở rộng, đồng thời cung cấp khả năng bảo mật cơ bản cho ứng dụng.
 
-![Mô Hình Sản Phẩm](access_demo/mohinh.jpg)
+![Mô Hình Sản Phẩm](/access_demo/mohinh.jpg)
 
 ## 2. Trạng thái khi vào trang web
 
 Khi người dùng truy cập trang web lần đầu tiên, giao diện sẽ hiển thị như sau:
 
-![Trạng thái lúc đầu](access_demo/trangthailucdau.PNG)
+![Trạng thái lúc đầu](/access_demo/trangthailucdau.PNG)
 
 Tại giao diện này, người dùng có thể nhập ID vào ô nhập liệu và gửi yêu cầu để truy cập tài nguyên tương ứng. Hệ thống sẽ xử lý yêu cầu, kiểm tra xem người dùng có quyền truy cập vào tài nguyên đó hay không.
 
@@ -20,7 +20,7 @@ Tại giao diện này, người dùng có thể nhập ID vào ô nhập liệu
 
 Nếu người dùng liên tục gửi các yêu cầu với ID không hợp lệ hoặc cố gắng thay đổi ID để tấn công, hệ thống sẽ coi đây là hành vi fuzzing. Khi số lượng yêu cầu đáng ngờ vượt quá ngưỡng cho phép, hệ thống sẽ chặn IP của người dùng và hiển thị thông báo lỗi như sau:
 
-![Trạng thái bị chặn](access_demo/dabichan.PNG)
+![Trạng thái bị chặn](/access_demo/dabichan.PNG)
 
 Trong giao diện này, người dùng sẽ được thông báo rằng IP của họ đã bị chặn do phát hiện hành vi tấn công hoặc truy cập trái phép.
 
