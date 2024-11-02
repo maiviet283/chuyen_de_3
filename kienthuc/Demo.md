@@ -6,9 +6,7 @@ Trong dự án này, chúng tôi đã phát triển một ứng dụng web sử 
 
 Ứng dụng sử dụng **Nginx** làm reverse proxy để quản lý lưu lượng truy cập, kết hợp với **Gunicorn** để xử lý các yêu cầu của ứng dụng Django. Điều này đảm bảo hiệu suất và khả năng mở rộng, đồng thời cung cấp khả năng bảo mật cơ bản cho ứng dụng.
 
-![Mô Hình 1 Sản Phẩm](access_demo/connect.jpg)
-
-![Mô Hình 2 Sản Phẩm](access_demo/django_nginx_gunicorn.png)
+![Mô Hình Sản Phẩm](access_demo/mohinh.jpg)
 
 ## 2. Trạng thái khi vào trang web
 
