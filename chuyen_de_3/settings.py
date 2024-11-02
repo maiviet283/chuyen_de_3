@@ -25,7 +25,11 @@ SECRET_KEY = 'django-insecure-136l%l4uk*y!slyp57pqntd$b$r3s@80(-^)9!^c(0tp(j@km-
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+# cấu hình để triển khai lên nginx
+#ALLOWED_HOSTS = ['*']
+
+# comment dòng này nếu muốn đưa lên ngix và xóa # ở dòng trên
+ALLOWED_HOSTS = []  
 
 
 # Application definition
@@ -118,7 +122,11 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
+# nếu triển khai lên nginx thì comment dòng dưới và mở 2 dòng dưới tiếp đó
 STATIC_URL = 'static/'
+
+#STATIC_URL = '/static/'
+#STATIC_ROOT = os.path.join(BASE_DIR,'static/')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
